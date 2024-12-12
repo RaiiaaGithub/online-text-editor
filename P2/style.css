@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+
+  /* Estilos para a sidebar */
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #333;
+    color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: width 0.3s;
+    overflow: hidden;
+  }
+
+  .sidebar.collapsed {
+    width: 60px; /* Largura reduzida quando recolhida */
+  }
+
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar ul li {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #444;
+  }
+
+  .sidebar ul li:hover {
+    background-color: #575757;
+  }
+
+  .sidebar ul li i {
+    margin-right: 10px;
+  }
+
+  .sidebar.collapsed ul li span {
+    display: none; /* Esconde o texto na sidebar recolhida */
+  }
+
+  /* Botão para abrir/recolher a sidebar */
+  .toggle-btn {
+    position: absolute;
+    top: 20px;
+    right: -25px;
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+  }
+
+  /* Conteúdo principal */
+  .content {
+    margin-left: 250px;
+    padding: 20px;
+    width: 100%;
+    transition: margin-left 0.3s;
+  }
+
+  .content.collapsed {
+    margin-left: 60px; /* Ajuste quando a sidebar está recolhida */
+  }
+
+  /* Estilo do editor de texto */
+  #inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .text-input {
+    width: 30%;
+    padding: 12px;
+    font-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .text-input:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
