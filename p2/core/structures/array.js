@@ -25,6 +25,14 @@ export default class RTArray {
   }
 
   /**
+   * Getter method to retrieve the length property of the class instance.
+   * @returns The length property of the class instance.
+   */
+  get length() {
+    return this.#length;
+  }
+
+  /**
    * Adds a new value to the end of the array-like data structure.
    * @param {unknown} value - The value to be added to the data structure.
    * @returns {Array} - The updated data structure after adding the new value.
