@@ -1,16 +1,14 @@
-// Definição de um Nó da Árvore
 class Node {
     constructor(value) {
       this.value = value;
-      this.left = null; // Filho à esquerda
-      this.right = null; // Filho à direita
-    }
+      this.left = null;
+      this.right = null; 
+        }
   }
   
-  // Definição da Árvore Binária
   class BinaryTree {
     constructor() {
-      this.root = null; // Inicialmente a árvore está vazia
+      this.root = null;
     }
   
     // Método para inserir um novo valor
@@ -60,6 +58,6 @@ class Node {
   tree.insert(60);
   tree.insert(80);
   
-  console.log("Árvore Binária (In-order):");
+  console.log("Árvore Binária:");
   tree.inOrder(); 
   
