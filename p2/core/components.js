@@ -24,7 +24,7 @@ export class BaseComponent {
    * Represents the tag of the element
    * @type {string}
    */
-  #tag;
+  tag = 'div';
   /**
    * Stores the element once it's created or changed
    */
@@ -40,8 +40,7 @@ export class BaseComponent {
    */
   #changed = false;
 
-  constructor(tag = "div", attrs = new RTArray(), classes = new RTArray()) {
-    this.#tag = tag;
+  constructor(classes = new RTArray(), attrs = new RTArray()) {
     this.attrs = attrs;
     this.classes = classes;
   }
@@ -56,7 +55,7 @@ export class BaseComponent {
     if (this.#element && !this.#changed) {
       return this.#element;
     }
-    const element = document.createElement(this.#tag);
+    const element = document.createElement(this.tag);
 
     if (this.#id) {
       element.id = this.#id;
