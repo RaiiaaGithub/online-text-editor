@@ -1,3 +1,6 @@
+/**
+ * Represents a node in a binary tree data structure.
+ */
 class Node {
   constructor(value) {
     this.value = value;
@@ -6,88 +9,185 @@ class Node {
   }
 }
 
+/**
+ * Represents a binary tree data structure.
+ */
 class BinaryTree {
   constructor() {
     this.root = null;
     this.insertOrder = []; // Para armazenar a ordem de inserção
   }
 
-  // Método para inserir um novo valor
   insert(value) {
     const newNode = new Node(value);
-    if (this.root === null) {
-      this.root = newNode; // Se a árvore estiver vazia, o novo nó é a raiz
-    } else {
-      this.insertNode(this.root, newNode); // Caso contrário, insere o nó de forma recursiva
+    if (!this.root) {
+      this.root = newNode;
+      this.insertOrder.push(value);
+      return;
     }
-    this.insertOrder.push(value); // Adiciona o valor à ordem de inserção
+
+    this.insertNode(this.root, newNode);
+    this.insertOrder.push(value);
   }
 
-  // Método recursivo para inserir o nó
+  /**
+   * Inserts a new node into a binary search tree.
+   * @param node - The current node being evaluated for insertion.
+   * @param newNode - The new node to be inserted.
+   */
   insertNode(node, newNode) {
     if (newNode.value < node.value) {
-      if (node.left === null) {
+      // Goes left
+      if (!node.left) {
         node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode); // Recursão para o lado esquerdo
+        return;
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode); // Recursão para o lado direito
-      }
+      this.insertNode(node.left, newNode);
+      return;
+    }
+
+    // Goes right
+    if (!node.right) {
+      node.right = newNode;
+      return;
+    }
+    this.insertNode(node.right, newNode);
+  }
+
+  /**
+   * Removes a node from the binary search tree starting from the root node.
+   * @param node - The node to be removed from the tree.
+   */
+  remove(node) {
+    this.root = this.removeNode(this.root, node);
+  }
+
+  /**
+   * Removes a node from a binary search tree.
+   * @param currentNode - The current node being evaluated.
+   * @param node - The value of the node to be removed.
+   * @returns The updated binary search tree after removing the specified node.
+   */
+  removeNode(currentNode, node) {
+    if (!currentNode) {
+      return null;
+    }
+
+    if (node < currentNode.value) {
+      // Goes left
+      currentNode.left = this.removeNode(currentNode.left, node);
+      return currentNode;
+    } else if (node > currentNode.value) {
+      // Goes right
+      currentNode.right = this.removeNode(currentNode.right, node);
+      return currentNode;
+    }
+
+    if (!currentNode.left && !currentNode.right) {
+      return null;
+    }
+    if (!currentNode.left) {
+      return currentNode.right;
+    }
+    if (!currentNode.right) {
+      return currentNode.left;
+    }
+
+    // Apply the algorithm to get the min value node on the right subtree - Isto foi explicado pelo professor. Feliz Natal :D
+    const successor = this.finMinNode(currentNode.right);
+    currentNode.value = successor.value;
+    currentNode.right = null;
+    return currentNode;
+  }
+
+  /**
+   * Finds the minimum node in a binary search tree starting from the given node.
+   */
+  finMinNode(node) {
+    while (!!node.left) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  /**
+   * Display the values of the binary search tree in order.
+   */
+  displayInOrder(node = this.root) {
+    if (!!node) {
+      this.displayInOrder(node.left);
+      console.log(node.value);
+      this.displayInOrder(node.right);
     }
   }
 
-  // Método para exibir a árvore em ordem (in-order)
-  inOrder(node = this.root) {
-    if (node !== null) {
-      this.inOrder(node.left); // Visita o filho esquerdo
-      console.log(node.value);  // Visita o nó atual
-      this.inOrder(node.right); // Visita o filho direito
-    }
-  }
-
-  // Método para exibir a ordem de inserção dos valores
+  /**
+   * Logs the insertion order of values in the insertOrder array to the console.
+   */
   showInsertionOrder() {
     console.log("Ordem de inserção dos valores:", this.insertOrder.join(", "));
   }
 
-  // Método para exibir a árvore de forma visual (hierárquica)
-  display(node = this.root, space = 0, count = 5) {
-    if (node === null) return;
-
-    // Aumenta o espaço à medida que desce pela árvore
-    space += count;
-
-    // Primeiro, imprime o filho direito (mais distante)
-    this.display(node.right, space);
-
-    // Imprime o valor do nó com indentação
-    console.log();
-    for (let i = count; i < space; i++) {
-      process.stdout.write(" "); // Adiciona espaços para mostrar a árvore
+  /**
+   * Display the nodes of the binary tree in a breadth-first traversal order.
+   * If the tree is empty, it logs "Tree is empty".
+   */
+  display() {
+    if (!this.root) {
+      console.log("Tree is empty");
+      return;
     }
-    console.log(node.value);
-    // Agora, imprime o filho esquerdo
-    this.display(node.left, space);
+
+    const nodeList = [];
+    nodeList.push(this.root);
+
+    while (nodeList.length > 0) {
+      const currentNode = nodeList.shift();
+
+      const leftValue = currentNode.left ?? "no value";
+      const rightValue = currentNode.right ?? "no value";
+
+      console.log(
+        `${currentNode.value} -> Left: ${leftValue.value}, Right: ${rightValue.value}`
+      );
+
+      if (!!currentNode.left) {
+        nodeList.push(currentNode.left);
+      }
+      if (!!currentNode.right) {
+        nodeList.push(currentNode.right);
+      }
+    }
   }
 }
 
 const tree = new BinaryTree();
 
-
+tree.insert(11);
+tree.insert(5);
+tree.insert(18);
+tree.insert(12);
+tree.insert(6);
+tree.insert(10);
+tree.insert(9);
+tree.insert(15);
+tree.insert(8);
 tree.insert(1);
 tree.insert(2);
-tree.insert(4);
+tree.insert(17);
+tree.insert(16);
+tree.insert(13);
+tree.insert(7);
+tree.insert(14);
 tree.insert(3);
-
-
+tree.insert(19);
+tree.insert(4);
+tree.insert(20);
 
 console.log("Árvore Binária:");
-tree.inOrder();
+tree.displayInOrder();
 
+tree.remove(9);
 
 console.log("\nÁrvore Visual:");
-tree.display(tree.root, 10, 3);
+tree.display(tree.root, 0, 10);
