@@ -1,7 +1,7 @@
 import { RTTry } from "../try.js";
 
 /**
- * Represents an array-like data structure with additional functionality.
+ * Represents an array-like data structure with custom functionality.
  */
 export default class RTArray {
   /**
