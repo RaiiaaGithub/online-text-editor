@@ -24,7 +24,7 @@ export class BaseComponent {
    * Represents the tag of the element
    * @type {string}
    */
-  tag = 'div';
+  tag = "div";
   /**
    * Stores the element once it's created or changed
    */
@@ -40,7 +40,12 @@ export class BaseComponent {
    */
   #changed = false;
 
-  constructor(classes = new RTArray(), attrs = new RTArray()) {
+  /**
+   * Stores the children of an element
+   */
+  children = new RTArray();
+
+  constructor(attrs = new RTArray(), classes = new RTArray()) {
     this.attrs = attrs;
     this.classes = classes;
   }
@@ -76,6 +81,14 @@ export class BaseComponent {
       }
       const { key, value } = attr;
       element.setAttribute(key, value);
+    }
+
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children.get(i);
+      if (!child) {
+        continue;
+      }
+      element.appendChild(child);
     }
 
     this.#changed = false;

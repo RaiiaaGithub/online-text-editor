@@ -7,5 +7,38 @@
     <script src="script.js" type="module" defer></script>
     <title>Document</title>
   </head>
-  <body></body>
+  <body>
+    <div class="wrapper">
+      <header class="side-bar">
+        <nav class="fs-explorer">
+          <h2>EXPLORER</h2>
+          <div class="folder">
+            <span class="folder-name">source</span>
+            <ul class="folder-content" data-open="true">
+              <div class="folder">
+                <span class="folder-name">components</span>
+                <ul class="folder-content" data-open="false">
+                  <li class="file">button.js</li>
+                  <li class="file">input.js</li>
+                </ul>
+              </div>
+              <li class="file" data-selected="true">index.html</li>
+              <li class="file">script.js</li>
+              <li class="file">style.css</li>
+            </ul>
+          </div>
+          <!-- where the files will be stored / created and displayed -->
+        </nav>
+      </header>
+      <main>
+        <div class="tabs"></div>
+        <div class="editor">
+          <!-- where the code lines will be -->
+        </div>
+        <div class="minimap">
+          <!-- show all the code in a bar -->
+        </div>
+      </main>
+    </div>
+  </body>
 </html>
