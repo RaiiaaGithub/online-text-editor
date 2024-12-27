@@ -1,7 +1,16 @@
 :root {
   --background: hsl(240, 15%, 12%);
+  --background-highlight: hsla(240, 15%, 40%, 0.3);
   --on-brackground: hsl(240, 16%, 96%);
   --background-divider: hsl(240, 16%, 20%);
+
+  --neutral: var(--on-brackground);
+  --neutral-darker: hsl(240, 16%, 40%);
+  --on-neutral: var(--background);
+
+  --accent: hsl(28, 60%, 59%);
+  --accent-darker: hsl(28, 40%, 40%);
+  --on-accent: hsl(28, 88%, 10%);
 }
 
 *,
@@ -46,19 +55,67 @@ header nav.fs-explorer {
 .fs-explorer li {
   display: block;
   width: 100%;
+  padding: 0.125rem 1rem;
 }
 
-/* Folders and Files (FS Explorer) */
-.fs-explorer .folder {
+.fs-explorer .folder .folder-name::before,
+.fs-explorer .file::before {
+  content: "";
+  display: inline-block;
+  height: 20px;
+  aspect-ratio: 1/1;
+  margin-inline-end: 1rem;
+
+  mask: url("./assets/icons/SVG/folder-open.svg") no-repeat center;
+  -webkit-mask: url("./assets/icons/SVG/folder-open.svg") no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+
+  background-color: var(--accent-darker);
 }
 
-.fs-explorer .folder .folder-name::before {
-  content: url("");
+.fs-explorer .folder:not([data-open="true"]) .folder-name::before {
+  mask: url("./assets/icons/SVG/folder.svg") no-repeat center;
+  -webkit-mask: url("./assets/icons/SVG/folder.svg") no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+
+  background-color: var(--accent);
+}
+
+.fs-explorer .file::before {
+  mask: url("./assets/icons/SVG/file-empty.svg") no-repeat center;
+  -webkit-mask: url("./assets/icons/SVG/file-empty.svg") no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+
+  background-color: var(--neutral-darker);
 }
 
 .fs-explorer .folder .folder-content {
   list-style: none;
   padding-inline-start: 1rem;
+  position: relative;
+}
+
+.fs-explorer .folder:not([data-open="true"]) .folder-content {
+  display: none;
+}
+
+.fs-explorer .folder .folder-content::before {
+  content: "";
+  background-color: var(--background-divider);
+  position: absolute;
+  width: 1px;
+  height: 100%;
+}
+
+.fs-explorer [data-selected="true"],
+.fs-explorer .folder-name:hover,
+.fs-explorer .file:hover {
+  background: var(--background-highlight);
+  cursor: pointer;
+  user-select: none;
 }
 
 /* Editor */
