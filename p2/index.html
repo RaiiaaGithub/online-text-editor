@@ -31,12 +31,33 @@
         </nav>
       </header>
       <main>
-        <div class="tabs"></div>
-        <div class="editor">
-          <!-- where the code lines will be -->
+        <div class="tabs">
+          <div class="tab" data-active="true">
+            <span class="tab-name">index.html</span>
+            <button class="tab-close"></button>
+          </div>
+          <div class="tab">
+            <span class="tab-name">style.css</span>
+            <button class="tab-close"></button>
+          </div>
+          <div class="tab">
+            <span class="tab-name">button.js</span>
+            <button class="tab-close"></button>
+          </div>
         </div>
-        <div class="minimap">
-          <!-- show all the code in a bar -->
+        <div class="editor">
+          <div class="input-line" data-current-line="true">
+            <span class="line-number">1</span>
+            <span class="input">&lthtml&gt</span>
+          </div>
+          <div class="input-line">
+            <span class="line-number">2</span>
+            <span class="input">&lthtml&gt</span>
+          </div>
+          <div class="input-line">
+            <span class="line-number">3</span>
+            <span class="input">&lthtml&gt</span>
+          </div>
         </div>
       </main>
     </div>
