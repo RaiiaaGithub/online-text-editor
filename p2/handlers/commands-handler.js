@@ -1,3 +1,4 @@
+import { createInputLine } from "../components/editor/input-line.js";
 import AREAS from "../core/constants/areas.js";
 import KEYS from "../core/constants/keys.js";
 import GlobalService from "../core/singleton.js";
@@ -33,8 +34,9 @@ function handleEditorCommands(buffer) {
 
   switch (firstKey) {
     case KEYS.ENTER: {
-      const editorPane = document.querySelector(".editor");
-      const inputElement = new Inpu();
+      const editorPane = document.querySelector(".code-wrapper");
+      const inputElement = createInputLine();
+      editorPane.appendChild(inputElement);
     }
   }
   if (buffer.peek)
