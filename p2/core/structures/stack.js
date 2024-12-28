@@ -1,9 +1,9 @@
-import { RTDoublyLinkedList } from "./doubly-linked-list.js";
+import RTDoublyLinkedList from "./doubly-linked-list.js";
 
 /**
  * Represents a stack data structure using a doubly linked list.
  */
-export class RTStack {
+export default class RTStack {
   #list;
 
   constructor() {

@@ -43,11 +43,16 @@ export class BaseComponent {
   /**
    * Stores the children of an element
    */
-  children = new RTArray();
+  children;
 
-  constructor(attrs = new RTArray(), classes = new RTArray()) {
+  constructor(
+    classes = new RTArray(),
+    attrs = new RTArray(),
+    children = new RTArray()
+  ) {
     this.attrs = attrs;
     this.classes = classes;
+    this.children = children;
   }
 
   /**

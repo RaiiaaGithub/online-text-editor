@@ -1,9 +1,9 @@
-import { RTDoublyNode } from "./notch.js";
+import RTDoublyNode from "./notch.js";
 
 /**
  * Represents a doubly linked list.
  */
-export class RTDoublyLinkedList {
+export default class RTDoublyLinkedList {
   #head;
   #tail;
   #size;
@@ -116,6 +116,15 @@ export class RTDoublyLinkedList {
     }
     this.#size--;
     return removedNode.value;
+  }
+
+  clear() {
+    if (this.isEmpty()) {
+      return;
+    }
+    this.#tail = null;
+    this.#head = null;
+    this.#size = 0;
   }
 
   /**
