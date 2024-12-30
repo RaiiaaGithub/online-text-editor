@@ -1,12 +1,9 @@
 import GlobalService from "./core/singleton.js";
 import { handleCommands } from "./handlers/commands-handler.js";
+import { handleRenderFileLines } from "./handlers/editor/text-handlers.js";
 
 const globalService = new GlobalService();
 
-document.addEventListener("keydown", (e) => {
-  e.preventDefault();
+handleRenderFileLines(undefined);
 
-  globalService.commandBuffer.enqueue(e.key);
-
-  const result = handleCommands();
-});
+document.addEventListener("keydown", handleCommands);
