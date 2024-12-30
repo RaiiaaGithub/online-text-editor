@@ -1,9 +1,9 @@
-import { RTDoublyLinkedList } from "./doubly-linked-list.js";
+import RTDoublyLinkedList from "./doubly-linked-list.js";
 
 /**
  * Represents a queue data structure using a doubly linked list.
  */
-export class RTQueue {
+export default class RTQueue {
   #list;
 
   constructor() {
@@ -41,6 +41,10 @@ export class RTQueue {
     return this.#list.removeFirst();
   }
 
+  clear() {
+    this.#list.clear();
+  }
+
   /**
    * Returns the data value of the node at the front of the queue without removing it.
    * @returns The data value of the node at the front of the queue, or null if the queue is empty.
@@ -52,7 +56,6 @@ export class RTQueue {
   /**
    * Print the elements of the linked list in order.
    * This method iterates through the linked list and prints each element separated by " -> ".
-   * @returns None
    */
   print() {
     this.#list.print();

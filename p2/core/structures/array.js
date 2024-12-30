@@ -19,7 +19,7 @@ export default class RTArray {
    * Constructor for creating an instance of a class.
    * @param {{[key: number]: unknown}} [data={}] - Optional data object to initialize the instance with.
    */
-  constructor(data = {}) {
+  constructor() {
     this.#length = 0;
     this.#data = {};
   }

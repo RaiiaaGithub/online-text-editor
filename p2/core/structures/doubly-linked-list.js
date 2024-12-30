@@ -1,9 +1,9 @@
-import { RTDoublyNode } from "./notch.js";
+import RTDoublyNode from "./notch.js";
 
 /**
  * Represents a doubly linked list.
  */
-export class RTDoublyLinkedList {
+export default class RTDoublyLinkedList {
   #head;
   #tail;
   #size;
@@ -64,6 +64,43 @@ export class RTDoublyLinkedList {
   }
 
   /**
+   * Inserts a new node after a node that meets a specified condition function.
+   * @param {any} value - The value of the new node to be inserted.
+   * @param {function} conditionFn - The condition function that determines where to insert the new node.
+   * @returns The newly inserted node.
+   * @throws {Error} If the conditionFn is not a function.
+   */
+  insertAfter(value, conditionFn) {
+    if (typeof conditionFn !== "function") {
+      throw new Error("Condition must be a function");
+    }
+
+    let current = this.head;
+
+    while (current) {
+      if (!conditionFn(current.value)) {
+        current = current.next;
+        continue;
+      }
+
+      const newNode = new RTDoublyNode(value);
+      newNode.next = current.next;
+      newNode.prev = current;
+
+      if (current.next) {
+        current.next.prev = newNode;
+      } else {
+        this.#tail = newNode;
+      }
+
+      current.next = newNode;
+
+      this.#size++;
+      return newNode;
+    }
+  }
+
+  /**
    * Adds a new node to the end of the list.
    * @param value - The value to be stored in the new node.
    */
@@ -96,7 +133,49 @@ export class RTDoublyLinkedList {
       this.#tail = null;
     }
     this.#size--;
-    return removedNode.value;
+    return removedNode;
+  }
+
+  /**
+   * Removes a node from the linked list based on the provided condition function.
+   * @param {Function} conditionFn - The function that determines whether a node should be removed.
+   * @returns The value of the removed node.
+   * @throws {Error} If the conditionFn is not a function.
+   */
+  remove(conditionFn) {
+    if (typeof conditionFn !== "function") {
+      throw new Error("Condition must be a function");
+    }
+
+    let current = this.head;
+    let removedNode = null;
+
+    while (current) {
+      if (conditionFn(current.value)) {
+        removedNode = current;
+        break;
+      }
+      current = current.next;
+    }
+
+    if (!removedNode) {
+      return null;
+    }
+
+    if (removedNode.prev) {
+      removedNode.prev.next = removedNode.next;
+    } else {
+      this.#head = removedNode.next;
+    }
+
+    if (removedNode.next) {
+      removedNode.next.prev = removedNode.prev;
+    } else {
+      this.#tail = removedNode.prev;
+    }
+
+    this.#size--;
+    return removedNode;
   }
 
   /**
@@ -118,20 +197,35 @@ export class RTDoublyLinkedList {
     return removedNode.value;
   }
 
-  /**
-   * Searches for a node containing the given value.
-   * @param value - The value to search for.
-   * @returns The node containing the value, or null if not found.
-   */
-  find(value) {
-    let current = this.head;
-    while (current) {
-      if (current.value === value) {
-        return current;
-      }
-      current = current.next;
+  clear() {
+    if (this.isEmpty()) {
+      return;
     }
-    return null;
+    this.#tail = null;
+    this.#head = null;
+    this.#size = 0;
+  }
+
+  /**
+   * Finds a node in the linked list that satisfies the given condition function.
+   * @param {Function} conditionFn - The function that defines the condition to be met.
+   * @returns The node that satisfies the condition function.
+   * @throws {Error} If the conditionFn is not a function.
+   */
+  find(conditionFn) {
+    if (typeof conditionFn !== "function") {
+      throw new Error("Condition must be a function");
+    }
+
+    let current = this.head;
+
+    while (current) {
+      if (!conditionFn(current.value)) {
+        current = current.next;
+        continue;
+      }
+      return current;
+    }
   }
 
   /**

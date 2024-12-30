@@ -1,0 +1,239 @@
+:root {
+  --background: hsl(240, 15%, 12%);
+  --background-highlight: hsla(240, 15%, 40%, 0.3);
+  --on-brackground: hsl(240, 16%, 96%);
+  --background-divider: hsl(240, 16%, 20%);
+
+  --neutral: var(--on-brackground);
+  --neutral-darker: hsl(240, 16%, 40%);
+  --on-neutral: var(--background);
+
+  --accent: hsl(28, 60%, 59%);
+  --accent-darker: hsl(28, 40%, 40%);
+  --on-accent: hsl(28, 88%, 10%);
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  max-width: 100%;
+  max-height: 100vh;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--background);
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: var(--background);
+  color: var(--on-brackground);
+
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: normal;
+  color: var(--neutral-darker);
+  padding-inline: 1rem;
+  padding-block: 0.75rem;
+}
+
+/* Side bar */
+header.side-bar {
+  width: 100%;
+  background-color: var(--background);
+  border-right: 1px solid var(--background-divider);
+}
+
+header nav.fs-explorer {
+  --icon-padding: 1rem;
+  font-size: 1.2rem;
+}
+
+.fs-explorer span,
+.fs-explorer li {
+  display: block;
+  width: 100%;
+  padding: 0.125rem 1rem;
+}
+
+.fs-explorer .folder .folder-name::before,
+.fs-explorer .file::before {
+  content: "";
+  display: inline-block;
+  height: 20px;
+  aspect-ratio: 1/1;
+  margin-inline-end: 1rem;
+
+  mask: url("./assets/icons/SVG/folder-open.svg") no-repeat center;
+  -webkit-mask: url("./assets/icons/SVG/folder-open.svg") no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+
+  background-color: var(--accent-darker);
+}
+
+.fs-explorer .folder:not([data-open="true"]) .folder-name::before {
+  mask: url("./assets/icons/SVG/folder.svg") no-repeat center;
+  -webkit-mask: url("./assets/icons/SVG/folder.svg") no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+
+  background-color: var(--accent);
+}
+
+.fs-explorer .file::before {
+  mask: url("./assets/icons/SVG/file-empty.svg") no-repeat center;
+  -webkit-mask: url("./assets/icons/SVG/file-empty.svg") no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+
+  background-color: var(--neutral-darker);
+}
+
+.fs-explorer .folder .folder-content {
+  list-style: none;
+  padding-inline-start: 1rem;
+  position: relative;
+}
+
+.fs-explorer .folder:not([data-open="true"]) .folder-content {
+  display: none;
+}
+
+.fs-explorer .folder .folder-content::before {
+  content: "";
+  background-color: var(--background-divider);
+  position: absolute;
+  width: 1px;
+  height: 100%;
+}
+
+.fs-explorer [data-selected="true"],
+.fs-explorer .folder-name:hover,
+.fs-explorer .file:hover {
+  background: var(--background-highlight);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Editor */
+main {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+/* Tabs */
+main .tabs {
+  grid-row: 1 / 2;
+  border-bottom: 1px solid var(--background-divider);
+  display: flex;
+  overflow-x: auto;
+}
+
+.tabs .tab {
+  padding-block: 0.5rem;
+  padding-inline: 1.5rem 1.2rem;
+  border-right: 1px solid var(--background-divider);
+
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.tabs .tab:not([data-active="true"]) {
+  color: var(--neutral-darker);
+}
+
+.tabs .tab-close {
+  background-color: transparent;
+  border: none;
+
+  border-radius: 4px;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+
+.tabs .tab-close::before {
+  content: "";
+  display: inline-block;
+  height: 10px;
+  aspect-ratio: 1/1;
+  mask: url("./assets/icons/SVG/cross.svg") no-repeat center;
+  -webkit-mask: url("./assets/icons/SVG/cross.svg") no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+
+  background-color: var(--neutral-darker);
+  transition: background-color 100ms ease-in-out;
+}
+
+.tabs .tab-close:hover::before {
+  background-color: var(--neutral);
+  box-shadow: 0 0 0 1rem var(--neutral-darker);
+}
+
+.tabs .tab-close:hover {
+  box-shadow: 0 0 0 1px var(--neutral-darker);
+}
+
+/* Editor */
+main .editor {
+  grid-row: 2/3;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.1rem;
+  height: 100%;
+}
+
+.editor .code-wrapper {
+  position: relative;
+  display: block;
+  height: 100%;
+}
+
+.editor .input-line {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  align-items: center;
+}
+
+.editor .input-line .line-number {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  color: var(--neutral-darker);
+  user-select: none;
+}
+
+.editor .input-line[data-current-line="true"] .line-number {
+  background-color: var(--background-highlight);
+  color: var(--on-brackground);
+}
+
+.editor .input-line .input {
+  padding-block: 0.3rem;
+}
+
+.editor .input:focus {
+  outline: none;
+}

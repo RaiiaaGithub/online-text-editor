@@ -1,10 +1,9 @@
-import RTArray from "./core/structures/array.js";
+import GlobalService from "./core/singleton.js";
+import { handleCommands } from "./handlers/commands-handler.js";
+import { handleRenderFileLines } from "./handlers/editor/text-handlers.js";
 
-const array = new RTArray();
+const globalService = new GlobalService();
 
-array.push(11);
-array.push(33);
-array.push(22);
-array.push(10);
+handleRenderFileLines(undefined);
 
-console.log(array);
+document.addEventListener("keydown", handleCommands);

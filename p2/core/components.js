@@ -17,18 +17,13 @@ export class Attr {
 }
 
 /**
- * Represents a base component class.
+ * Class that represents an HTML element with builder flow.
  */
-export class BaseComponent {
+export default class Element {
   /**
    * Represents the tag of the element
-   * @type {string}
    */
-  tag = 'div';
-  /**
-   * Stores the element once it's created or changed
-   */
-  #element = undefined;
+  #tag = "div";
 
   /**
    * Represents the value for the id attribute on HTML elements.
@@ -36,14 +31,24 @@ export class BaseComponent {
   #id = undefined;
 
   /**
-   * A boolean variable indicating whether a change has occurred.
+   * Initializes a new RTArray object and assigns it to the 'attrs' variable.
    */
-  #changed = false;
+  #attrs = new RTArray();
 
-  constructor(classes = new RTArray(), attrs = new RTArray()) {
-    this.attrs = attrs;
-    this.classes = classes;
-  }
+  /**
+   * Initialize a new RTArray object and assign it to the 'classes' property.
+   */
+  #classes = new RTArray();
+
+  /**
+   * Initialize a new RTArray and assign it to the 'children' property of the current object.
+   */
+  #children = new RTArray();
+
+  /**
+   * Represents the text content of an HTML element.
+   */
+  #textContent = "";
 
   /**
    * Returns the element associated with this class. If the element has not changed since
@@ -52,25 +57,22 @@ export class BaseComponent {
    * @returns {HTMLElement} The element associated with this class.
    */
   get element() {
-    if (this.#element && !this.#changed) {
-      return this.#element;
-    }
-    const element = document.createElement(this.tag);
+    const element = document.createElement(this.#tag);
 
     if (this.#id) {
       element.id = this.#id;
     }
 
-    for (let i = 0; i < this.classes.length; i++) {
-      const className = this.classes.get(i);
+    for (let i = 0; i < this.#classes.length; i++) {
+      const className = this.#classes.get(i);
       if (!className) {
         continue;
       }
       element.classList.add(className);
     }
 
-    for (let i = 0; i < this.attrs.length; i++) {
-      const attr = this.attrs.get(i);
+    for (let i = 0; i < this.#attrs.length; i++) {
+      const attr = this.#attrs.get(i);
       if (!attr) {
         continue;
       }
@@ -78,38 +80,76 @@ export class BaseComponent {
       element.setAttribute(key, value);
     }
 
-    this.#changed = false;
-    this.#element = element;
-    return this.#element;
+    element.textContent = this.#textContent;
+
+    for (let i = 0; i < this.#children.length; i++) {
+      const child = this.#children.get(i);
+      if (!child) {
+        continue;
+      }
+      element.appendChild(child);
+    }
+
+    return element;
   }
 
   /**
-   * Adds an ID to the object.
-   * @param {string} id - The ID to be added.
-   * @returns {object} The object with the ID added.
+   * Sets the tag for the current object.
+   * @param {string} tag - The tag to be set for the object.
+   * @returns {Element} This object with the tag set.
    */
-  addId(id) {
+  setTag(tag) {
+    if (!StringValidators.isString(tag)) {
+      console.error("Tag must be of type string");
+      return this;
+    }
+    this.#tag = tag;
+    return this;
+  }
+
+  /**
+   * Sets the ID of the object.
+   * @param {string} id - The ID to set for the object.
+   * @returns {Element} The object with the ID set.
+   */
+  setId(id) {
     if (!StringValidators.isString(id)) {
       console.error("ID must be of type string");
       return this;
     }
     this.#id = id;
-    this.#changed = true;
+    return this;
+  }
+
+  /**
+   * Get the text content stored in the private field #textContent.
+   * @returns The text content stored in the private field #textContent.
+   */
+  getTextContent() {
+    return this.#textContent;
+  }
+
+  /**
+   * Sets the text content of an element.
+   * @param {string} text - The text content to set.
+   * @returns {Element} The instance of the object with the text content set.
+   */
+  setTextContent(text) {
+    this.#textContent = text;
     return this;
   }
 
   /**
    * Adds a class to the element.
    * @param {string} className - The class name to add to the element.
-   * @returns {this} The instance of the class with the added class.
+   * @returns {Element} The instance of the class with the added class.
    */
   addClass(className) {
     if (!StringValidators.isString(className)) {
       console.error("Class must be of type string");
       return this;
     }
-    this.classes.push(className);
-    this.#changed = true;
+    this.#classes.push(className);
     return this;
   }
 
@@ -117,7 +157,7 @@ export class BaseComponent {
    * Adds a new attribute with the given key and value to the element.
    * @param {string} key - The key of the attribute to add.
    * @param {string} value - The value of the attribute to add.
-   * @returns {this} The updated element with the new attribute added.
+   * @returns {Element} The updated element with the new attribute added.
    */
   addAttr(key, value) {
     if (!StringValidators.isString(key)) {
@@ -130,8 +170,17 @@ export class BaseComponent {
       return this;
     }
 
-    this.attrs.push(new Attr(key, value));
-    this.#changed = true;
+    this.#attrs.push(new Attr(key, value));
+    return this;
+  }
+
+  /**
+   * Add a child element to the current element.
+   * @param {Element} element - The child element to add.
+   * @returns {Element} The updated element with the new child added.
+   */
+  addChildren(element) {
+    this.#children.push(element);
     return this;
   }
 }

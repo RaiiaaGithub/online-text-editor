@@ -8,7 +8,7 @@ const StringValidators = {
    * @returns {boolean} Returns true if the value is a string, false otherwise.
    */
   isString(str) {
-    return typeof value === "string" || value instanceof String;
+    return typeof str === "string" || str instanceof String;
   },
 
   /**
