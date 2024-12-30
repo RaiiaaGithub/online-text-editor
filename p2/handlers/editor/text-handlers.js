@@ -103,7 +103,7 @@ export function handleTextBackspace(e) {
   if (!activeInput) return;
 
   const textInput = activeInput.querySelector(".input");
-  const { start, end, selection } = getCaretPosition();
+  const { start, end } = getCaretPosition();
 
   if (start - end !== 0) {
     return;

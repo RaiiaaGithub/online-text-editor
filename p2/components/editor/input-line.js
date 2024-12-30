@@ -48,7 +48,15 @@ export function getLineNumber(element) {
  * Sets the given element as the active input by adding a data attribute and focusing on the input field.
  * @param {Element} element - The element to set as active input.
  */
-export function setActiveInput(element) {
+export function setActiveInput(element, caretPos = 0) {
   element.setAttribute("data-current-line", "true");
-  element.querySelector(".input").focus();
+  const spanElement = element.querySelector(".input");
+  spanElement.focus();
+
+  const selection = window.getSelection();
+  const range = document.createRange();
+  range.setStart(spanElement, caretPos);
+  range.setEnd(spanElement, caretPos);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }

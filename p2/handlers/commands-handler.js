@@ -67,5 +67,3 @@ function handleEditorCommands(e, buffer) {
 }
 
 function handleFileExplorerCommands(buffer) {}
-
-export function onEditorEnterKey(e) {}

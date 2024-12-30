@@ -13,7 +13,7 @@ export function handleCaretMovement(e) {
   );
   const lineNumber = getLineNumber(activeInput);
 
-  const { start, end, size } = getCaretPosition();
+  const { start } = getCaretPosition();
 
   const currentNode = globalService.editorInputList.find(
     (line) => getLineNumber(line) === lineNumber
@@ -25,7 +25,7 @@ export function handleCaretMovement(e) {
         return;
       }
       activeInput.removeAttribute("data-current-line");
-      setActiveInput(currentNode.prev.value);
+      setActiveInput(currentNode.prev.value, start);
       break;
     }
     case KEYS.ARROW_DOWN: {
@@ -33,7 +33,7 @@ export function handleCaretMovement(e) {
         return;
       }
       activeInput.removeAttribute("data-current-line");
-      setActiveInput(currentNode.next.value);
+      setActiveInput(currentNode.next.value, start);
       break;
     }
   }
