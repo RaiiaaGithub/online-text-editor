@@ -1,20 +1,54 @@
 import Element from "../../core/components.js";
+import { handleCaretPosition } from "../../handlers/editor/caret-handler.js";
 
 /**
- * Creates an input line element with line number and input span.
- * @param {number} [lineNumber=1] - The line number to display on the input line.
- * @returns {Element} - The input line element with line number and input span.
+ * Creates an input line element with line number and content.
+ * @param {number} [lineNumber=1] - The line number for the input line.
+ * @param {string} [content=""] - The content of the input line.
+ * @returns {HTMLElement} - The input line element with line number and content.
  */
-export function createInputLine(lineNumber = 1) {
+export function createInputLine(lineNumber = 1, content = "", focus = true) {
   const element = new Element()
     .addClass("input-line")
-    .addAttr("data-current-line", "false")
+    .setTextContent(content)
     .addChildren(
       new Element()
         .setTag("span")
         .addClass("line-number")
         .setTextContent(lineNumber).element
     )
-    .addChildren(new Element().setTag("span").addClass("input").element);
+    .addChildren(
+      new Element()
+        .setTag("span")
+        .addClass("input")
+        .addAttr("contenteditable", "true").element
+    );
+
+  if (focus) {
+    element.addAttr("data-current-line", "true");
+  }
+
+  document.addEventListener("click", handleCaretPosition);
   return element.element;
+}
+
+/**
+ * Retrieves the line number associated with a given element.
+ * @param {Element} element - The element containing the line number information.
+ * @returns {number | undefined} The line number parsed from the element, or undefined if element is falsy.
+ */
+export function getLineNumber(element) {
+  if (!element) {
+    return;
+  }
+  return parseInt(element.querySelector(".line-number").textContent, 10);
+}
+
+/**
+ * Sets the given element as the active input by adding a data attribute and focusing on the input field.
+ * @param {Element} element - The element to set as active input.
+ */
+export function setActiveInput(element) {
+  element.setAttribute("data-current-line", "true");
+  element.querySelector(".input").focus();
 }
