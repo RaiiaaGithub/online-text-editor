@@ -3,7 +3,11 @@ import KEYS from "../core/constants/keys.js";
 import GlobalService from "../core/singleton.js";
 import RTQueue from "../core/structures/queue.js";
 import { handleCaretMovement } from "./editor/caret-handler.js";
-import { handleNewLine, handleTextBackspace } from "./editor/text-handlers.js";
+import {
+  handleControlCommands,
+  handleNewLine,
+  handleTextBackspace,
+} from "./editor/text-handlers.js";
 
 const globalService = new GlobalService();
 
@@ -23,7 +27,7 @@ export function handleCommands(e) {
 
   switch (area) {
     case AREAS.EDITOR:
-      handleEditorCommands(e, buffer);
+      handleEditorCommands(e);
       break;
     case AREAS.FILE_EXPLORER:
       handleFileExplorerCommands(buffer);
@@ -43,7 +47,8 @@ export function handleCommands(e) {
  * @param {RTQueue} buffer - The buffer object that stores the key press history.
  * @returns None
  */
-function handleEditorCommands(e, buffer) {
+function handleEditorCommands(e) {
+  const buffer = globalService.commandBuffer;
   const firstKey = buffer.peek();
   switch (firstKey) {
     case KEYS.ENTER: {
@@ -54,12 +59,16 @@ function handleEditorCommands(e, buffer) {
     case KEYS.BACKSPACE:
       handleTextBackspace(e);
       buffer.clear();
+      break;
     case KEYS.ARROW_UP:
     case KEYS.ARROW_DOWN:
     case KEYS.ARROW_LEFT:
     case KEYS.ARROW_RIGHT:
       handleCaretMovement(e);
       buffer.clear();
+      break;
+    case KEYS.CTRL:
+      handleControlCommands(e);
       break;
     default:
       buffer.clear();

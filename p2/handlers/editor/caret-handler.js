@@ -7,6 +7,10 @@ import GlobalService from "../../core/singleton.js";
 
 const globalService = new GlobalService();
 
+/**
+ * Handles the movement of the caret in the editor based on the key pressed.
+ * @param {Event} e - The event object containing information about the key pressed.
+ */
 export function handleCaretMovement(e) {
   const activeInput = document.querySelector(
     '.input-line[data-current-line="true"]'
@@ -19,24 +23,31 @@ export function handleCaretMovement(e) {
     (line) => getLineNumber(line) === lineNumber
   );
 
+  let targetNode = null;
+
   switch (e.key) {
     case KEYS.ARROW_UP: {
       if (lineNumber === 1) {
         return;
       }
-      activeInput.removeAttribute("data-current-line");
-      setActiveInput(currentNode.prev.value, start);
+      targetNode = currentNode.prev;
       break;
     }
     case KEYS.ARROW_DOWN: {
-      if (lineNumber >= globalService.editorInputList.size - 1) {
+      if (lineNumber >= globalService.editorInputList.size) {
         return;
       }
-      activeInput.removeAttribute("data-current-line");
-      setActiveInput(currentNode.next.value, start);
+      targetNode = currentNode.next;
       break;
     }
+    default:
+      return;
   }
+
+  if (!targetNode) return;
+
+  activeInput.removeAttribute("data-current-line");
+  setActiveInput(targetNode.value, start);
 }
 
 /**
@@ -58,6 +69,18 @@ export function handleCaretPosition(e) {
   activeInput.removeAttribute("data-current-line");
   const currentLine = e.target.closest(".input-line");
   currentLine.setAttribute("data-current-line", "true");
+
+  if (e.key === " ") {
+    e.preventDefault();
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const spaceNode = document.createTextNode("\u00A0"); // Non-breaking space
+    range.insertNode(spaceNode);
+    range.setStartAfter(spaceNode);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
 }
 
 export function getCaretPosition() {
@@ -65,7 +88,7 @@ export function getCaretPosition() {
   return {
     start: selection.focusOffset,
     end: selection.anchorOffset,
-    size: selection.anchorOffset - selection.focusOffset,
+    size: Math.abs(selection.anchorOffset - selection.focusOffset),
     selection: selection,
   };
 }

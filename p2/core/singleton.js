@@ -10,6 +10,8 @@ import StringValidators from "./validators/string-validators.js";
 export default class GlobalService {
   #commandBuffer;
   #undoBuffer;
+  #redoBuffer;
+  #clipboardBuffer;
   #editorInputList;
   #currentArea;
 
@@ -21,9 +23,11 @@ export default class GlobalService {
     // Load required data for the app
     this.#commandBuffer = new RTQueue();
     this.#undoBuffer = new RTStack();
+    this.#redoBuffer = new RTStack();
     this.#editorInputList = new RTDoublyLinkedList();
     this.#currentArea = AREAS.EDITOR;
 
+    this.#clipboardBuffer = new RTDoublyLinkedList();
     GlobalService.instance = this;
   }
 
@@ -33,6 +37,14 @@ export default class GlobalService {
 
   get undoBuffer() {
     return this.#undoBuffer;
+  }
+
+  get redoBuffer() {
+    return this.#redoBuffer;
+  }
+
+  get clipboardBuffer() {
+    return this.#clipboardBuffer;
   }
 
   get editorInputList() {
