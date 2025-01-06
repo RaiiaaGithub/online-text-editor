@@ -2,8 +2,10 @@ import {
   createInputLine,
   getLineNumber,
 } from "../../components/editor/input-line.js";
+import KEYS from "../../core/constants/keys.js";
 import GlobalService from "../../core/singleton.js";
 import RTDoublyNode from "../../core/structures/notch.js";
+import { stringSplitEndlines, stringSubstring } from "../../utils/strings.js";
 import { getCaretPosition } from "./caret-handler.js";
 
 const globalService = new GlobalService();
@@ -27,9 +29,9 @@ function renderLine(node, iterator) {
   if (!node) {
     newLine = createInputLine(iterator + 1);
   } else if (iterator === 0) {
-    newLine = createInputLine(iterator + 1, node.value);
+    newLine = createInputLine(iterator + 1, node.value ?? "");
   } else {
-    newLine = createInputLine(iterator + 1, node.value, false);
+    newLine = createInputLine(iterator + 1, node.value ?? "", false);
   }
 
   const codeWrapper = document.querySelector(".code-wrapper");
@@ -47,20 +49,20 @@ function renderLine(node, iterator) {
  * Handles the creation of a new line in the input buffer.
  * @param {Event} e - The event that triggered the creation of a new line.
  */
-export function handleNewLine(e) {
+export function handleNewLine(e, textContent = "") {
+  e.preventDefault();
   const activeInput = document.querySelector(
     '.input-line[data-current-line="true"]'
   );
 
   if (!activeInput) {
     console.log("No active input was found");
-    e.preventDefault();
     return;
   }
 
   const lineNumber = getLineNumber(activeInput);
 
-  const newLine = createInputLine(lineNumber + 1);
+  const newLine = createInputLine(lineNumber + 1, textContent);
   activeInput.after(newLine);
   activeInput.removeAttribute("data-current-line");
   newLine.querySelector(".input").focus();
@@ -71,8 +73,6 @@ export function handleNewLine(e) {
   );
 
   updateLineNumber(newNode);
-
-  e.preventDefault();
 }
 
 /**
@@ -95,7 +95,103 @@ function updateLineNumber(node, increment = 1) {
   }
 }
 
+/**
+ * Handles the backspace key event for a text input field.
+ * @param {Event} e - The event object for the key press.
+ */
 export function handleTextBackspace(e) {
+  removeLine(e);
+}
+
+/**
+ * Handles control commands based on the event and buffer provided.
+ * @param {Event} e - The event triggering the control command.
+ */
+export function handleControlCommands(e) {
+  switch (e.key) {
+    // Copy and paste commands are detected using the event listeners "copy" and "paste"
+    case KEYS.CTRL:
+      return;
+    case KEYS.X:
+      cutLine(e);
+      break;
+    default:
+      globalService.commandBuffer.clear();
+      return;
+  }
+  globalService.commandBuffer.clear();
+}
+
+export function cutLine(e) {
+  copyLine(e);
+
+  const activeInput = document.querySelector(
+    '.input-line[data-current-line="true"]'
+  );
+  const spanElement = activeInput.querySelector(".input");
+
+  if (getCaretPosition(activeInput) === 1 && spanElement.textContent > 0) {
+    spanElement.textContent = "";
+    return;
+  }
+
+  removeLine(e, false);
+}
+
+export function copyLine(e) {
+  const activeInput = document.querySelector(
+    '.input-line[data-current-line="true"]'
+  );
+  const spanElement = activeInput.querySelector(".input");
+  const { start, end, size } = getCaretPosition();
+
+  if (size > 0) {
+    const selected = stringSubstring(spanElement.textContent, start, end);
+    if (selected.error) {
+      console.error(selected.error);
+      return;
+    }
+    globalService.clipboardBuffer.insertFirst(selected.ok);
+    console.log(`Added ${selected.ok ?? "undefined"} to the clipboard`);
+    stringSplitEndlines(selected.ok.selected + selected.ok.after);
+
+    // FIX:
+    console.log(selected.ok);
+    return;
+  }
+
+  e.preventDefault();
+
+  const inputNode = globalService.editorInputList.find(
+    (line) => getLineNumber(line) === getLineNumber(activeInput)
+  );
+
+  if (!inputNode) {
+    return;
+  }
+
+  if (globalService.clipboardBuffer.size > 20) {
+    globalService.clipboardBuffer.pop();
+  }
+
+  globalService.clipboardBuffer.insertFirst(spanElement.textContent);
+  console.log(
+    `Added ${spanElement.textContent ?? "undefined"} to the clipboard`
+  );
+  stringSplitEndlines(spanElement.textContent);
+}
+
+async function pasteLine(e) {
+  e.preventDefault();
+
+  const clipboardApiText = navigator.clipboard.readText().then((text) => {
+    console.log("clipboard", text);
+    console.log(text.split("\n"));
+    console.log(text.split("\r"));
+  });
+}
+
+export function removeLine(e, trackCaret = true) {
   const activeInput = document.querySelector(
     '.input-line[data-current-line="true"]'
   );
@@ -105,12 +201,14 @@ export function handleTextBackspace(e) {
   const textInput = activeInput.querySelector(".input");
   const { start, end } = getCaretPosition();
 
-  if (start - end !== 0) {
-    return;
-  }
+  if (!!trackCaret) {
+    if (start - end !== 0) {
+      return;
+    }
 
-  if (start !== 0) {
-    return;
+    if (start !== 0) {
+      return;
+    }
   }
 
   const lineNumber = getLineNumber(activeInput);
@@ -135,32 +233,11 @@ export function handleTextBackspace(e) {
 
   updateLineNumber(removedNode, -1);
 
-  if (previousInput) {
+  if (previousInput && trackCaret) {
     previousInput.textContent += activeText;
   }
 
   activeInput.remove();
   previousLine.setAttribute("data-current-line", "true");
-
-  const otherLines = document.querySelectorAll(
-    '.input-line[data-current-line="true"]'
-  );
-
-  otherLines.forEach((line) => {
-    if (line !== previousLine) {
-      line.removeAttribute("data-current-line");
-    }
-  });
-
-  const wSelection = window.getSelection();
-  const range = document.createRange();
-
-  range.setStart(
-    previousInput.childNodes[0] || previousInput,
-    previousInput.textContent.length
-  );
-  range.collapse(true);
-
-  wSelection.removeAllRanges();
-  wSelection.addRange(range);
+  previousLine.querySelector(".input").focus();
 }

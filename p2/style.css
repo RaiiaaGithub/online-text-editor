@@ -232,6 +232,9 @@ main .editor {
 
 .editor .input-line .input {
   padding-block: 0.3rem;
+  padding-inline-start: 1rem;
+  white-space: pre;
+  white-space-collapse: preserve-spaces;
 }
 
 .editor .input:focus {

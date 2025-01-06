@@ -138,7 +138,7 @@ export default class RTDoublyLinkedList {
 
   /**
    * Removes a node from the linked list based on the provided condition function.
-   * @param {Function} conditionFn - The function that determines whether a node should be removed.
+   * @param {(el: Element) => boolean} conditionFn - The function that determines whether a node should be removed.
    * @returns The value of the removed node.
    * @throws {Error} If the conditionFn is not a function.
    */

@@ -10,15 +10,15 @@ import { handleCaretPosition } from "../../handlers/editor/caret-handler.js";
 export function createInputLine(lineNumber = 1, content = "", focus = true) {
   const element = new Element()
     .addClass("input-line")
-    .setTextContent(content)
     .addChildren(
       new Element()
         .setTag("span")
         .addClass("line-number")
-        .setTextContent(lineNumber).element
+        .setTextContent(String(lineNumber)).element
     )
     .addChildren(
       new Element()
+        .setTextContent(content)
         .setTag("span")
         .addClass("input")
         .addAttr("contenteditable", "true").element
@@ -28,7 +28,7 @@ export function createInputLine(lineNumber = 1, content = "", focus = true) {
     element.addAttr("data-current-line", "true");
   }
 
-  document.addEventListener("click", handleCaretPosition);
+  document.addEventListener("mousedown", handleCaretPosition);
   return element.element;
 }
 
@@ -52,11 +52,4 @@ export function setActiveInput(element, caretPos = 0) {
   element.setAttribute("data-current-line", "true");
   const spanElement = element.querySelector(".input");
   spanElement.focus();
-
-  const selection = window.getSelection();
-  const range = document.createRange();
-  range.setStart(spanElement, caretPos);
-  range.setEnd(spanElement, caretPos);
-  selection.removeAllRanges();
-  selection.addRange(range);
 }
